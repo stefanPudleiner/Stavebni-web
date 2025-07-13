@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Stavební práce - Štefan Pudleiner</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f9f9f9;
+    margin: 0;
+    padding: 0;
+    color: #333;
+  }
+  header {
+    background: #2c3e50;
+    color: white;
+    padding: 30px 20px;
+    text-align: center;
+  }
+  header h1 {
+    margin: 0;
+  }
+  nav {
+    margin: 20px auto;
+    max-width: 900px;
+    text-align: center;
+  }
+  nav button {
+    background: #3498db;
+    border: none;
+    color: white;
+    padding: 10px 15px;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+  }
+  nav button.active {
+    background: #2980b9;
+  }
+  main {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 0 20px 40px;
+  }
+  .service {
+    background: white;
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  }
+  .service h3 {
+    margin-top: 0;
+  }
+  form {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    max-width: 600px;
+    margin: 40px auto;
+  }
+  form label {
+    display: block;
+    margin: 10px 0 5px;
+  }
+  form input, form textarea {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    font-size: 1em;
+  }
+  form button {
+    margin-top: 15px;
+    background: #27ae60;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+  }
+  footer {
+    text-align: center;
+    padding: 15px 10px;
+    background: #2c3e50;
+    color: white;
+    font-size: 0.9em;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Štefan Pudleiner - Stavební práce</h1>
+  <p>Profesionální stavební služby na míru</p>
+</header>
+
+<nav>
+  <button class="filter-btn active" data-filter="all">Všechny služby</button>
+  <button class="filter-btn" data-filter="rekonstrukce">Rekonstrukce</button>
+  <button class="filter-btn" data-filter="stavby">Novostavby</button>
+  <button class="filter-btn" data-filter="opravy">Opravy</button>
+</nav>
+
+<main id="services-list">
+  <!-- Dynamické služby se vykreslí sem -->
+</main>
+
+<form id="contact-form">
+  <h2>Kontaktujte mě</h2>
+  <label for="name">Jméno:</label>
+  <input type="text" id="name" name="name" required />
+
+  <label for="email">Email:</label>
+  <input type="email" id="email" name="email" required />
+
+  <label for="message">Zpráva:</label>
+  <textarea id="message" name="message" rows="5" required></textarea>
+
+  <button type="submit">Odeslat</button>
+  <p id="form-msg" style="color:green; display:none; margin-top:10px;">Děkuji za zprávu! Ozvu se co nejdříve.</p>
+</form>
+
+<footer>
+  &copy; 2025 Štefan Pudleiner · <a href="mailto:info@stefanpudleiner.cz" style="color:#58a;">info@stefanpudleiner.cz</a>
+</footer>
+
+<script>
+  const services = [
+    {
+      title: "Kompletní rekonstrukce bytu",
+      category: "rekonstrukce",
+      description: "Modernizace a přestavba interiérů včetně elektroinstalace, malby a podlah.",
+    },
+    {
+      title: "Výstavba rodinných domů",
+      category: "stavby",
+      description: "Zajišťujeme stavbu nových rodinných domů od základů až po střechu.",
+    },
+    {
+      title: "Opravy střech a fasád",
+      category: "opravy",
+      description: "Rychlé a kvalitní opravy poškozených střech a fasád budov.",
+    },
+    {
+      title: "Rekonstrukce koupelen",
+      category: "rekonstrukce",
+      description: "Kompletní přestavba koupelen na míru podle vašich představ.",
+    },
+    {
+      title: "Zednické práce",
+      category: "stavby",
+      description: "Kvalitní zednické služby pro novostavby i opravy.",
+    },
+    {
+      title: "Opravy elektroinstalace",
+      category: "opravy",
+      description: "Bezpečné a spolehlivé opravy a revize elektroinstalací.",
+    }
+  ];
+
+  const servicesList = document.getElementById('services-list');
+  const filterButtons = document.querySelectorAll('.filter-btn');
+
+  function renderServices(filter = 'all') {
+    servicesList.innerHTML = '';
+    const filtered = filter === 'all' ? services : services.filter(s => s.category === filter);
+    if(filtered.length === 0) {
+      servicesList.innerHTML = '<p>Žádné služby k zobrazení.</p>';
+      return;
+    }
+    filtered.forEach(s => {
+      const div = document.createElement('div');
+      div.className = 'service';
+      div.innerHTML = `<h3>${s.title}</h3><p>${s.description}</p>`;
+      servicesList.appendChild(div);
+    });
+  }
+
+  filterButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderServices(btn.dataset.filter);
+    });
+  });
+
+  // Inicializace seznamu služeb
+  renderServices();
+
+  // Kontakt - jednoduché front-endové odeslání
+  const form = document.getElementById('contact-form');
+  const formMsg = document.getElementById('form-msg');
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    // Tady by normálně byla logika pro odeslání na server
+    form.reset();
+    formMsg.style.display = 'block';
+    setTimeout(() => formMsg.style.display = 'none', 4000);
+  });
+</script>
+
+</body>
+</html>
